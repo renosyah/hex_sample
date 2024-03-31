@@ -1,0 +1,20 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/sea.obj-87b551feb49fba092e166f1060a62416.mesh"
+
+[deps]
+
+files=[ "res://.import/sea.obj-87b551feb49fba092e166f1060a62416.mesh" ]
+
+source_file="res://map/hex/sea/sea.obj"
+dest_files=[ "res://.import/sea.obj-87b551feb49fba092e166f1060a62416.mesh", "res://.import/sea.obj-87b551feb49fba092e166f1060a62416.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+octahedral_compression=true
+optimize_mesh_flags=4286
