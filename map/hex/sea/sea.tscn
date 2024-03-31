@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://assets/fonts/montserrat_eb_14.tres" type="DynamicFont" id=1]
 [ext_resource path="res://map/hex/tile.gd" type="Script" id=2]
@@ -14,6 +14,11 @@ albedo_color = Color( 0.564706, 0.301961, 0, 1 )
 [sub_resource type="SpatialMaterial" id=4]
 flags_transparent = true
 albedo_color = Color( 0, 0.270588, 0.768627, 0.756863 )
+
+[sub_resource type="SpatialMaterial" id=5]
+flags_transparent = true
+flags_unshaded = true
+albedo_color = Color( 1, 0, 0, 0.623529 )
 
 [node name="tile" type="Spatial"]
 script = ExtResource( 2 )
@@ -37,3 +42,5 @@ transform = Transform( 0.95, 0, 0, 0, 0.95, 0, 0, 0, 0.95, 0, 0.5, 0 )
 visible = false
 mesh = ExtResource( 3 )
 software_skinning_transform_normals = false
+material/0 = SubResource( 5 )
+material/1 = SubResource( 5 )
