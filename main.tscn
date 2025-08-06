@@ -15,4 +15,7 @@ script = ExtResource( 3 )
 [node name="movable_camera" parent="." instance=ExtResource( 2 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, 12 )
 
+[connection signal="on_enter" from="car" to="." method="_on_car_on_enter"]
+[connection signal="on_leave" from="car" to="." method="_on_car_on_leave"]
+[connection signal="on_reach" from="car" to="." method="_on_car_on_reach"]
 [connection signal="on_tile_click" from="map" to="." method="_on_map_on_tile_click"]

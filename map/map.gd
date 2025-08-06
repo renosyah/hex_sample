@@ -18,6 +18,7 @@ var _obstacle_tiles :Array = []
 var _tiles :Dictionary = {} # Vector2 : Object TileData
 
 var _click_position :Vector3
+var _navigation_ids :Dictionary = {} # Vector2 : int
 var _navigation = AStar2D.new()
 var _noise :OpenSimplexNoise = OpenSimplexNoise.new()
 
@@ -92,6 +93,7 @@ func _get_noise_value(pos :Vector2) -> Dictionary:
 	return data
 	
 func _spawn_tiles(datas :Array):
+	var index :int = 1
 	for i in datas:
 		var data :TileData = i
 		if data.is_odd:
@@ -102,10 +104,13 @@ func _spawn_tiles(datas :Array):
 		
 		var tile = data.tile_scene.instance()
 		tile.id = data.id
+		tile.nav_id = index
 		holder.add_child(tile)
 		tile.translation = data.position
 		
 		_tiles[data.id] = tile
+		_navigation_ids[data.id] = index
+		index += 1
 	
 func _init_navigations():
 	_add_point(_tiles.keys(), _navigation)
@@ -144,9 +149,7 @@ func _connect_point(groups :Array, nav :AStar2D):
 				nav.connect_points(_get_id(cell), _get_id(next_cell), false)
 				
 func _get_id(point : Vector2) -> int:
-	var a = point.x
-	var b = point.y
-	return (a + b) * (a + b + 1) / 2 + b
+	return _navigation_ids[point]
 	
 func get_tiles() -> Array:
 	return _tiles.values()

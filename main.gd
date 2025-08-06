@@ -25,6 +25,7 @@ func _on_map_on_tile_click(tile):
 		else:
 			var paths = map.get_navigation(from, to)
 			car.paths = _get_hex_positions(paths)
+			car.path_ids = paths
 			_show_path(paths)
 			
 		state = 2
@@ -35,14 +36,13 @@ func _on_map_on_tile_click(tile):
 		state = 0
 		return
 		
-		
 func _unshow():
 	var tiles = map.get_tiles()
 	for t in tiles:
 		t.highlight(false)
 		
 func _show_adjacent(from :Vector2):
-	var tiles = map.get_astar_adjacent_tile(from, 3)
+	var tiles = map.get_astar_adjacent_tile(from, 2)
 	for id in tiles:
 		map.get_tile(id).highlight(true)
 		
@@ -59,7 +59,16 @@ func _show_path(paths :PoolVector2Array):
 	for id in paths:
 		map.get_tile(id).highlight(true)
 
-
+func _on_car_on_reach():
+	_unshow()
+	state = 0
+	
+func _on_car_on_enter(id):
+	print("car enter : ",id)
+	
+func _on_car_on_leave(id):
+	print("car leave : ",id)
+	map.get_tile(id).highlight(false)
 
 
 
