@@ -42,11 +42,14 @@ func _unshow():
 		t.highlight(false)
 		
 func _show_adjacent(from :Vector2):
+	# for view range
+	#var tiles = map.get_adjacent_tile(from, 2)
+	
+	# for travel range
 	var tiles = map.get_astar_adjacent_tile(from, 2)
+	
 	for id in tiles:
 		map.get_tile(id).highlight(true)
-		
-	map.get_tile(from).highlight(true)
 	
 func _get_hex_positions(paths :PoolVector2Array) -> Array:
 	var datas = []
