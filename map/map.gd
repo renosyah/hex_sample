@@ -154,25 +154,36 @@ func get_tiles() -> Array:
 func get_tile(id :Vector2) -> BaseTile:
 	return _tiles[id]
 	
-func get_adjacent_tile(from :Vector2) -> Array:
-	var neighbors = []
-	var directions = [
-		Vector2(-1, -1), Vector2(0, -1),
-		Vector2(-1, 0), Vector2(1, 0),
-		Vector2(-1, 1), Vector2(0, 1)
-	]
-	if _odd_tiles.has(from):
-		directions = [
-			Vector2(1,  0), Vector2(1, -1), Vector2( 0, -1),
-			Vector2(-1,  0), Vector2( 0, 1), Vector2(1, +1)
+func _get_directions(tile: Vector2) -> Array:
+	if _odd_tiles.has(tile):
+		return [
+			Vector2(1, 0), Vector2(1, -1), Vector2(0, -1),
+			Vector2(-1, 0), Vector2(0, 1), Vector2(1, 1)
+		]
+	else:
+		return [
+			Vector2(1, 0), Vector2(0, -1), Vector2(-1, -1),
+			Vector2(-1, 0), Vector2(-1, 1), Vector2(0, 1)
 		]
 		
-	for i in directions:
-		var pos = from + i
-		if _tiles.has(pos):
-			neighbors.append(pos)
-			
-	return neighbors
+func get_adjacent_tile(from: Vector2, radius: int = 1) -> Array:
+	var visited := {}
+	var frontier := [from]
+	visited[from] = true
+
+	for step in range(radius):
+		var next_frontier := []
+		for current in frontier:
+			var directions = _get_directions(current)
+			for dir in directions:
+				var neighbor = current + dir
+				if _tiles.has(neighbor) and not visited.has(neighbor):
+					visited[neighbor] = true
+					next_frontier.append(neighbor)
+		frontier = next_frontier
+		
+	visited.erase(from)
+	return visited.keys()
 	
 func _on_Area_input_event(camera, event, position, normal, shape_idx):
 	_click_position = position
