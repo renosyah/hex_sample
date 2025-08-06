@@ -6,7 +6,7 @@ const sea_tile_scene = preload("res://map/hex/sea/sea.tscn")
 const ground_tile_scene = preload("res://map/hex/ground/ground.tscn")
 const mountain_tile_scene = preload("res://map/hex/mountain/mountain.tscn")
 
-export var map_size :Vector2 = Vector2(8,8)
+export var map_size :Vector2 = Vector2(6,6)
 export var spacing :float = 2
 
 onready var holder = $holder
@@ -42,15 +42,30 @@ func _ready():
 	_spawn_tiles(datas)
 	_init_navigations()
 	
-func _generate_tiles() -> Array:
-	_noise.seed = 1
-	_noise.octaves = 3
-	_noise.period = 12.0
-	_noise.persistence = 0.856
-	_noise.lacunarity = 1.745
-	
+func _generate_hex_shape_map():
 	var tile_datas :Array = []
+	var radius = map_size.x
+	var axial_tiles = _hexes_in_radius(radius)
 	
+	for axial in axial_tiles:
+		var id = _axial_to_offset(axial.x, axial.y)
+		var x_offset = 0
+		var is_odd :bool
+		
+		if int(id.y) % 2 != 0:
+			x_offset = 0.5
+			is_odd = true
+		
+		var pos = Vector3(id.x + x_offset, 0, id.y * 0.75) * spacing
+		var noise_value :Dictionary = _get_noise_value(id)
+		var tile_scene :PackedScene = noise_value["scene"]
+		var has_obstacle :bool =  noise_value["has_obstacle"]
+		tile_datas.append(TileData.new(id, pos, tile_scene, is_odd, has_obstacle))
+		
+	return tile_datas
+	
+func _generate_simple_shape_map():
+	var tile_datas :Array = []
 	var id :Vector2 = Vector2.ZERO
 	for x in range(-map_size.x, map_size.x + 1):
 		for y in range(-map_size.y, map_size.y + 1):
@@ -72,6 +87,15 @@ func _generate_tiles() -> Array:
 		id.x += 1
 		
 	return tile_datas
+	
+func _generate_tiles() -> Array:
+	_noise.seed = 1
+	_noise.octaves = 3
+	_noise.period = 12.0
+	_noise.persistence = 0.856
+	_noise.lacunarity = 1.745
+	
+	return _generate_hex_shape_map()
 	
 func _get_noise_value(pos :Vector2) -> Dictionary:
 	var data :Dictionary = {
@@ -236,7 +260,40 @@ func get_closes_tile(from :Vector3) -> BaseTile:
 			current = i
 			
 	return current
-
+	
+func _hexes_in_radius(radius: int) -> Array:
+	var results = []
+	var center = Vector2(0, 0)
+	for r in range(0, radius + 1):
+		results += _hex_ring(center, r)
+	return results
+	
+func _hex_ring(center: Vector2, radius: int) -> Array:
+	if radius == 0:
+		return [center]
+		
+	var results = []
+	var q = center.x
+	var r = center.y
+	
+	var hex = Vector2(q - radius, r + 0)
+	var directions = [
+		Vector2(1, -1), Vector2(1, 0), Vector2(0, 1),
+		Vector2(-1, 1), Vector2(-1, 0), Vector2(0, -1)
+	]
+	
+	for dir in directions:
+		for i in range(radius):
+			results.append(hex)
+			hex += dir
+			
+	return results
+	
+func _axial_to_offset(q: int, r: int) -> Vector2:
+	var col = q
+	var row = r + int((q - (q & 1)) / 2)  # odd-q
+	return Vector2(col, row)
+	
 
 
 

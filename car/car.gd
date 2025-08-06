@@ -15,7 +15,6 @@ func _process(delta):
 	var pos = global_transform.origin
 	var to = paths.front()
 	if pos.distance_to(to) < 0.4:
-		
 		paths.pop_front()
 		
 		# return last path
@@ -25,7 +24,6 @@ func _process(delta):
 		if paths.empty():
 			emit_signal("on_reach")
 		else:
-			# return on next entered path
 			emit_signal("on_enter", path_ids.front())
 		return
 	

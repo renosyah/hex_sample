@@ -70,7 +70,7 @@ func _on_car_on_enter(id):
 	print("car enter : ",id)
 	
 func _on_car_on_leave(id):
-	print("car leave : ",id)
+	#print("car leave : ",id)
 	map.get_tile(id).highlight(false)
 
 
