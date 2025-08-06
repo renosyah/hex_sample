@@ -15,7 +15,7 @@ onready var collision_shape = $Area/CollisionShape
 
 var _odd_tiles :Array = []
 var _obstacle_tiles :Array = []
-var _tiles :Dictionary = {}
+var _tiles :Dictionary = {} # Vector2 : Object TileData
 
 var _click_position :Vector3
 var _navigation = AStar2D.new()
@@ -184,6 +184,33 @@ func get_adjacent_tile(from: Vector2, radius: int = 1) -> Array:
 		
 	visited.erase(from)
 	return visited.keys()
+	
+func get_astar_adjacent_tile(from: Vector2, radius: int = 1) -> Array:
+	var from_id: int = _get_id(from)
+	var visited := {}
+	var result := []
+	var queue := [from_id]
+	visited[from_id] = 0
+
+	while not queue.empty():
+		var current_id = queue.pop_front()
+		var current_depth = visited[current_id]
+
+		if current_depth >= radius:
+			continue
+
+		for neighbor_id in _navigation.get_point_connections(current_id):
+			if neighbor_id in visited:
+				continue
+				
+			if _navigation.is_point_disabled(neighbor_id):
+				continue
+				
+			visited[neighbor_id] = current_depth + 1
+			queue.append(neighbor_id)
+			result.append(_navigation.get_point_position(neighbor_id))
+			
+	return result
 	
 func _on_Area_input_event(camera, event, position, normal, shape_idx):
 	_click_position = position

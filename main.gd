@@ -42,7 +42,7 @@ func _unshow():
 		t.highlight(false)
 		
 func _show_adjacent(from :Vector2):
-	var tiles = map.get_adjacent_tile(from, 3)
+	var tiles = map.get_astar_adjacent_tile(from, 3)
 	for id in tiles:
 		map.get_tile(id).highlight(true)
 		
